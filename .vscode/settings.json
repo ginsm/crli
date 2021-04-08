@@ -1,0 +1,12 @@
+{
+  "workbench.colorCustomizations": {
+    "statusBar.noFolderBackground": "#17171b",
+    "statusBar.debuggingBackground": "#17171b"
+  },
+  "python.formatting.provider": "yapf",
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
+  "python.formatting.yapfArgs": [
+    "--style={based_on_style: pep8, indent_width: 2}"
+  ]
+}

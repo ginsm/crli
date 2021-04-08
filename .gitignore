@@ -1,0 +1,3 @@
+**/crli.egg-info
+**/__pycache__
+crli/db.json
