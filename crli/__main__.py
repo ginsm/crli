@@ -77,10 +77,8 @@ def main():
       method_name = opt.removeprefix('--').replace('-', '_')
       method = Handler.get(method_name)
 
-      if method and method_name == "debug":
-        method(options)
-      elif method:
-        method(value)
+      if method:
+        method(value, options)
       else:
         print(f"Error: Option '{opt}' hasn't been implemented yet!")
 
