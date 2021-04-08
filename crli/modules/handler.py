@@ -11,7 +11,9 @@ from .error import Error
 from .streamlink import Streamlink
 
 
-def _show(show=""):
+# Option Handlers
+# -----------
+def _show(show="", options={}):
   # Store the old show in case the new one doesn't exist
   [previous_show] = Store.fetch.state("show")
 
@@ -43,7 +45,7 @@ def _show(show=""):
     print(f"[crli] Show is now set to '{show}', episode {ep_num}.")
 
 
-def _episode(ep_num="1"):
+def _episode(ep_num="1", options={}):
   # Get the show name and episodes
   [show] = Store.fetch.state("show")
   Error.check.must_select_show(show)
@@ -73,7 +75,7 @@ def _episode(ep_num="1"):
   return False
 
 
-def _play(value=None):
+def _play(value=None, options={}):
   # Get the show name and show data
   [show, quality, autoplay] = Store.fetch.state("show", "quality", "autoplay")
   Error.check.must_select_show(show)
@@ -98,13 +100,14 @@ def _play(value=None):
 
   if autoplay:
     while True:
+      print("[crli] Autoplay is enabled.")
       play_episode(show, quality)
       _next()
   else:
     play_episode(show, quality)
 
 
-def _next(value=None):
+def _next(value=None, options={}):
   [show] = Store.fetch.state("show")
   Error.check.must_select_show(show)
 
@@ -132,7 +135,7 @@ def _next(value=None):
   return
 
 
-def _info(value=None):
+def _info(value=None, options={}):
   # Get the show name
   [show] = Store.fetch.state("show")
   Error.check.must_select_show(show)
@@ -152,20 +155,22 @@ def _info(value=None):
     print(info)
 
 
-def _debug(value={}):
-  print("<Debug Information>", value)
-
-
-def _quality(value="best"):
+def _quality(value="best", options={}):
   Store.update_state({'quality': value})
 
 
-def _autoplay(value=None):
+def _autoplay(value=None, options={}):
   [autoplay] = Store.fetch.state("autoplay")
   Store.update_state({'autoplay': (not autoplay)})
   print(f"[crli] Autoplay has been turned {'off' if autoplay else 'on'}.")
 
 
+def _debug(value={}, options={}):
+  print("<Debug Information>", options)
+
+
+# Exit Handler
+# -----------
 def _exit():
   pid = os.getpid()
   [playing] = Store.fetch.state("playing")
