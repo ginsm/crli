@@ -81,17 +81,12 @@ def _play(value=None, options={}):
   Error.check.must_select_show(show)
 
   def play_episode(show="", quality="best"):
-    [episode] = Store.fetch.show("episode")
-    [ep_num, season, title, link] = [
-        episode.get("episode"),
-        episode.get("season"),
-        episode.get("title"),
-        episode.get("link")
-    ]
+    [ep, season, title, link] = Store.fetch.episode("episode", "season",
+                                                    "title", "link")
 
     # Alert the user about what content is playing
     print(
-        f"[crli] Launching media player...\n[crli] Show: {show}\n[crli] Title: {title}\n[crli] Episode: {ep_num} (Season {season})"
+        f"[crli] Launching media player...\n[crli] Show: {show}\n[crli] Title: {title}\n[crli] Episode: {ep} (Season {season})"
     )
 
     # Start streamlink
@@ -141,7 +136,7 @@ def _info(value=None, options={}):
   Error.check.must_select_show(show)
 
   # Get the current episode
-  episode = Store.fetch.show("episode")[0].get("episode")
+  [episode] = Store.fetch.episode("episode")
 
   # Get the episodes for the selected show
   episodes = Feed.get_episodes(show).get("episodes")
@@ -171,7 +166,7 @@ def _debug(value={}, options={}):
 
 # Exit Handler
 # -----------
-def _exit():
+def _playing():
   pid = os.getpid()
   [playing] = Store.fetch.state("playing")
   if pid == playing:
@@ -187,5 +182,5 @@ Handler = DotMap({
     'autoplay': _autoplay,
     'info': _info,
     'next': _next,
-    'exit': _exit
+    'playing': _playing
 })

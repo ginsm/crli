@@ -10,21 +10,8 @@ from .utility import Utility
 from .store import Store
 
 
-# Scraping & Parsing of Crunchy's RSS Feeds
+# Utility Functions
 # -----------
-def _rss_feed(show="", lang="en"):
-  return f"https://www.crunchyroll.com/{show}.rss"
-
-
-def _scrape(feed=""):
-  try:
-    response = requests.get(feed)
-    return BeautifulSoup(response.content, features='xml')
-  except Exception as e:
-    print("RSS scraping has failed. See exception:")
-    return print(e)
-
-
 def _episode_props(episode):
   def get_prop(name, _default="None"):
     value = episode.find(name)
@@ -37,6 +24,21 @@ def _episode_props(episode):
       'link': get_prop("link"),
       'date': get_prop("crunchyroll:premiumPubDate")
   }
+
+
+# Scraping & Parsing of Crunchy's RSS Feeds
+# -----------
+def _rss_feed(show=""):
+  return f"https://www.crunchyroll.com/{show}.rss"
+
+
+def _scrape(feed=""):
+  try:
+    response = requests.get(feed)
+    return BeautifulSoup(response.content, features='xml')
+  except Exception as e:
+    print("RSS scraping has failed. See exception:")
+    return print(e)
 
 
 def _parse(xml=[]):

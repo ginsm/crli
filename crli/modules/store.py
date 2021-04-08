@@ -20,7 +20,7 @@ def _query_show(value=''):
 
 
 # Allows for destructuring as a list
-def _get_list_builder(dictionary={}, args=[]):
+def _destructure_dict(dictionary={}, args=[]):
   if len(args):
     output = []
     for arg in args:
@@ -57,23 +57,13 @@ def _update_show(data={}, new_data={}):
     sys.exit('[crli] Error: You must enter a show before you can do that.')
 
 
-# Exposed methods (setters)
-# -----------
-def _language(value="en"):
-  supported_languages = json.loads(Utility.get_env("languages"))
-  if value in supported_languages:
-    _update_state({'lang': value})
-  else:
-    print(f"[crli] Error: {value} is not a supported language.")
-
-
 # Exposed methods (getters)
 # -----------
 def _fetch_state(*args):
   # state object
   state = db.table("state").get(doc_id=1)
   # allow for custom data fetches
-  output = _get_list_builder(state, args=args)
+  output = _destructure_dict(state, args=args)
   return output if bool(output) else state
 
 
@@ -91,20 +81,18 @@ def _fetch_show(*args, show=''):
     return False
 
   # Allow for custom data fetches, otherwise return show's data
-  output = _get_list_builder(show_data, args)
+  output = _destructure_dict(show_data, args)
   return output if bool(output) else show_data
 
 
 def _fetch_episode(*args):
   # The episode data is stored within
   [episode_data] = _fetch_show("episode")
-  output = _get_list_builder(episode_data, args)
+  output = _destructure_dict(episode_data, args)
   return output if bool(output) else episode_data
 
 
 Store = DotMap({
-    'db': db,
-    'Query': Query,
     'init_state': _init_state,
     'update_show': _update_show,
     'update_state': _update_state,

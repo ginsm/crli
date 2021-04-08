@@ -24,7 +24,7 @@ from docopt import docopt
 
 from .modules.utility import Utility
 
-# Environmental variable required for store
+# Set root path variable (used in Store)
 path = Utility.get_path(__file__)
 Utility.set_env('root_path', path)
 
@@ -35,30 +35,26 @@ from .modules.feed import Feed
 
 
 def main():
-  # Initialize state and create environment variables
+  # Initialize state
   Store.init_state(
       default_state={
           'show': None,
           'quality': "best",
-          'lang': "en",
           'autoplay': False,
           'playing': False,
           'tracked': [],
       })
 
-  Utility.set_env("languages", '["en"]')
+  # Toggle playing at exit (pid locked)
+  atexit.register(Handler.playing)
 
-  atexit.register(Handler.exit)
-
+  # Disables issuing of commands while playing a show
   [playing] = Store.fetch.state("playing")
-
-  if playing:
-    return print(
-        "[crli] Error: Please close the current show before issuing commands.")
+  Error.check.is_playing(playing)
 
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
-  Error.check.no_argument_help(sys.argv, __doc__)
+  Error.check.no_arguments_issue_help(sys.argv, __doc__)
 
   # Initialize docopt
   options = docopt(__doc__, help=True, version='crly v0.1.0')
