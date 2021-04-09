@@ -53,8 +53,6 @@ def _update_show(data={}, new_data={}):
     shows.update(data, _query_show(show))
   elif bool(new_data):
     shows.insert(new_data)
-  else:
-    sys.exit('[crly] Error: You must enter a show before you can do that.')
 
 
 # Exposed methods (getters)

@@ -75,8 +75,6 @@ def main():
 
       if method:
         method(value, options)
-      else:
-        print(f"Error: Option '{opt}' hasn't been implemented yet!")
 
 
 if __name__ == '__main__':

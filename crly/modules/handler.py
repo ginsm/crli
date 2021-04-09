@@ -21,9 +21,7 @@ def _show(show="", options={}):
   episodes = Feed.get_episodes(show)
 
   # Episodes couldn't be found; stop execution
-  if not bool(episodes):
-    Store.update_state(data={'show': previous_show})
-    sys.exit(f"[crly] Error: Could not find episodes for show '{show}'.")
+  Error.check.no_episodes(episodes, show, previous_show)
 
   # Show exists
   if bool(Store.fetch.show(show=show)):
@@ -59,16 +57,12 @@ def _episode(ep_num="1", options={}):
       break
 
   # Handle episode not found
-  if not bool(data):
-    return print(
-        f"[crly] Error: Could not find episode {ep_num} for {show}.\n[crly] Tip: Use 'crly --info' for a list of episodes."
-    )
+  Error.check.episode_not_found(show, ep_num, data)
 
   # Otherwise, save that data to the show object
-  else:
-    episodes.update({'episode': data})
-    Store.update_show(data=episodes)
-    print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
+  episodes.update({'episode': data})
+  Store.update_show(data=episodes)
+  print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
 
 
 def _play(value=None, options={}):
@@ -109,8 +103,7 @@ def _next(value=None, options={}):
   episodes = episodes_data.get("episodes")
 
   # Ensure there is a next episode
-  if (len(episodes) - 1) == index:
-    sys.exit(f"[crly] Error: There are are no more episodes for {show}.")
+  Error.check.on_last_episode(show, episodes, index)
 
   # Get the new episode and assign an index
   new_episode = episodes[index + 1]
