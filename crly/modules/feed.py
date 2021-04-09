@@ -1,7 +1,6 @@
 # Responsible for requesting and parsing feed data from crunchyroll:
 
 import requests
-import timeit
 
 from bs4 import BeautifulSoup
 from dotmap import DotMap
@@ -41,10 +40,10 @@ def _scrape(feed=""):
     return print(e)
 
 
-def _parse(xml=[]):
+def _parse(xml=[], old_amount=0):
   episodes = xml.findAll('item')
   try:
-    parsed_episodes = map(_episode_props, episodes)
+    parsed_episodes = map(_episode_props, episodes[old_amount::])
     return list(parsed_episodes)
   except Exception as e:
     print("XML parsing has failed. See exception:")
@@ -54,41 +53,32 @@ def _parse(xml=[]):
 # Exposed methods
 # -----------
 @Utility.memoize
-def _scrape_episodes(show=''):
+def _scrape_episodes(show='', old_amount=0):
   feed = _rss_feed(show)
   xml = _scrape(feed)
-  episodes = list(_parse(xml))
+  episodes = _parse(xml, old_amount)
   return sorted(episodes, key=lambda e: float(e['episode']))
 
 
 def _get_episodes(show=""):
-  show_data = Store.fetch.show(show=show)
+  show_data = (Store.fetch.show(show=show) or {})
 
   if Utility.update_needed(show_data):
     print("[crly] Retrieving show data...")
-    episodes = _scrape_episodes(show)
+    old_episodes = (show_data.get("episodes") or [])
+    episodes = old_episodes + _scrape_episodes(show, len(old_episodes))
 
-    # If no episodes could be found
     if not bool(episodes):
       return False
 
-    if show_data is not False:
-      stored_episodes = show_data.get("episodes")
-    else:
-      stored_episodes = False
-
-    # Check if there was any new episodes added
-    if not stored_episodes or len(episodes) > len(stored_episodes):
+    if len(episodes) > len(old_episodes):
       last_updated = episodes[-1].get("date")
       next_update = Utility.gen_next_update(last_updated)
       return {'episodes': episodes, 'next_update': next_update.timestamp()}
-    # If not, check again in a week
     else:
-      return {'next_update': show_data.get("next_update") + 604800}
+      return {'next_update': old_episodes.get("next_update") + 604800}
 
-  return {
-      'episodes': show_data.get("episodes"),
-  }
+  return show_data
 
 
 # Expose via DotMap
