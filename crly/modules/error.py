@@ -17,7 +17,7 @@ def _required_native_packages(required_pkgs=[]):
       missing_pkg.append(package)
     if len(missing_pkg):
       sys.exit(
-          f"[crli] Error: Missing required linux package(s): {', '.join(missing_pkg)}."
+          f"[crly] Error: Missing required linux package(s): {', '.join(missing_pkg)}."
       )
 
 
@@ -29,14 +29,14 @@ def _no_arguments_issue_help(argv, doc):
 def _must_select_show(show=''):
   if not show:
     sys.exit(
-        "[crli] Error: You need to select a show before you can do that.\n[crli] Tip: You can select a show via 'crli --show <name>'."
+        "[crly] Error: You need to select a show before you can do that.\n[crly] Tip: You can select a show via 'crly --show <name>'."
     )
 
 
 def _is_playing(playing=False):
   if playing:
     return print(
-        "[crli] Error: Please close the current show before issuing commands.")
+        "[crly] Error: Please close the current show before issuing commands.")
 
 
 Error = DotMap({
