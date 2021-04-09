@@ -23,12 +23,12 @@ def _show(show="", options={}):
   # Episodes couldn't be found; stop execution
   if not bool(episodes):
     Store.update_state(data={'show': previous_show})
-    sys.exit(f"[crli] Error: Could not find episodes for show '{show}'.")
+    sys.exit(f"[crly] Error: Could not find episodes for show '{show}'.")
 
   # Show exists
   if bool(Store.fetch.show(show=show)):
     Store.update_show(data=episodes)
-    print(f"[crli] Show is now set to '{show}'.")
+    print(f"[crly] Show is now set to '{show}'.")
 
   # Show does not exist
   else:
@@ -41,7 +41,7 @@ def _show(show="", options={}):
 
     # Store the show with its data
     Store.update_show(new_data=data)
-    print(f"[crli] Show is now set to '{show}', episode {ep_num}.")
+    print(f"[crly] Show is now set to '{show}', episode {ep_num}.")
 
 
 def _episode(ep_num="1", options={}):
@@ -61,14 +61,14 @@ def _episode(ep_num="1", options={}):
   # Handle episode not found
   if not bool(data):
     return print(
-        f"[crli] Error: Could not find episode {ep_num} for {show}.\n[crli] Tip: Use 'crli --info' for a list of episodes."
+        f"[crly] Error: Could not find episode {ep_num} for {show}.\n[crly] Tip: Use 'crly --info' for a list of episodes."
     )
 
   # Otherwise, save that data to the show object
   else:
     episodes.update({'episode': data})
     Store.update_show(data=episodes)
-    print(f"[crli] Episode is now set to '{ep_num}' for {show}.")
+    print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
     return True
 
   return False
@@ -85,7 +85,7 @@ def _play(value=None, options={}):
 
     # Alert the user about what content is playing
     print(
-        f"[crli] Launching media player...\n[crli] Show: {show}\n[crli] Title: {title}\n[crli] Episode: {ep} (Season {season})"
+        f"[crly] Launching media player...\n[crly] Show: {show}\n[crly] Title: {title}\n[crly] Episode: {ep} (Season {season})"
     )
 
     # Start streamlink
@@ -94,7 +94,7 @@ def _play(value=None, options={}):
 
   if autoplay:
     while True:
-      print("[crli] Autoplay is enabled.")
+      print("[crly] Autoplay is enabled.")
       play_episode(show, quality)
       _next()
   else:
@@ -113,7 +113,7 @@ def _next(value=None, options={}):
 
   # Ensure there is a next episode
   if (len(episodes) - 1) == index:
-    sys.exit(f"[crli] Error: There are are no more episodes for {show}.")
+    sys.exit(f"[crly] Error: There are are no more episodes for {show}.")
 
   # Get the new episode and assign an index
   new_episode = episodes[index + 1]
@@ -125,7 +125,7 @@ def _next(value=None, options={}):
 
   # Store the new episode & episodes_data
   Store.update_show(data=episodes_data)
-  print(f"[crli] Episode is now set to '{ep_num}' for {show}.")
+  print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
   return
 
 
@@ -156,7 +156,7 @@ def _quality(value="best", options={}):
 def _autoplay(value=None, options={}):
   [autoplay] = Store.fetch.state("autoplay")
   Store.update_state({'autoplay': (not autoplay)})
-  print(f"[crli] Autoplay has been turned {'off' if autoplay else 'on'}.")
+  print(f"[crly] Autoplay has been turned {'off' if autoplay else 'on'}.")
 
 
 def _debug(value={}, options={}):

@@ -54,7 +54,7 @@ def _update_show(data={}, new_data={}):
   elif bool(new_data):
     shows.insert(new_data)
   else:
-    sys.exit('[crli] Error: You must enter a show before you can do that.')
+    sys.exit('[crly] Error: You must enter a show before you can do that.')
 
 
 # Exposed methods (getters)

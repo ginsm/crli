@@ -65,7 +65,7 @@ def _get_episodes(show=""):
   show_data = Store.fetch.show(show=show)
 
   if Utility.update_needed(show_data):
-    print("[crli] Retrieving show data...")
+    print("[crly] Retrieving show data...")
     episodes = _scrape_episodes(show)
 
     # If no episodes could be found

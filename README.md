@@ -1,4 +1,4 @@
-# crli
+# crly
 
 A streamlink wrapper that allows you to easily watch and track crunchyroll series.
 
