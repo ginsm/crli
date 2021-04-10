@@ -1,11 +1,9 @@
-import sys
 import subprocess
 import os
 
 from dotmap import DotMap
 
 from .store import Store
-from .utility import Utility
 from .feed import Feed
 from .error import Error
 

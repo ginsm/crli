@@ -1,5 +1,3 @@
-# Responsible for requesting and parsing feed data from crunchyroll:
-
 import requests
 
 from bs4 import BeautifulSoup

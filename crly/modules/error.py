@@ -15,14 +15,13 @@ def _required_native_packages(required_pkgs=[]):
     response = subprocess.call(['which', package],
                                stderr=subprocess.DEVNULL,
                                stdout=subprocess.DEVNULL)
-
-    # Handle response
     if response != 0:
       missing_pkg.append(package)
-    if len(missing_pkg):
-      sys.exit(
-          f"[crly] Error: Missing required linux package(s): {', '.join(missing_pkg)}."
-      )
+
+  if len(missing_pkg):
+    sys.exit(
+        f"[crly] Error: Missing required linux package(s): {', '.join(missing_pkg)}."
+    )
 
 
 def _no_arguments_issue_help(argv, doc):

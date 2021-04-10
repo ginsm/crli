@@ -1,8 +1,8 @@
 from datetime import datetime
-from dateutil.parser import parse as parse_date
-from dateutil.relativedelta import relativedelta as rdelta
 import os
 
+from dateutil.parser import parse as parse_date
+from dateutil.relativedelta import relativedelta as rdelta
 from dotmap import DotMap
 
 

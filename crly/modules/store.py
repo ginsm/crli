@@ -1,6 +1,4 @@
-import sys
 import os
-import json
 
 from dotmap import DotMap
 from tinydb import TinyDB, Query
