@@ -69,13 +69,23 @@ def _play(value=None, options={}):
   Error.check.must_select_show(show)
 
   def play_episode(show="", quality="best"):
-    [ep, season, title, link] = Store.fetch.episode("episode", "season",
-                                                    "title", "link")
+    # Get episode and props
+    episode = Store.fetch.episode()
+    [ep, season, title, link, index] = [
+        episode.get("episode"),
+        episode.get("season"),
+        episode.get("title"),
+        episode.get("link"),
+        episode.get("index")
+    ]
 
     # Alert the user about what content is playing
     print(
         f"[crly] Launching media player...\n[crly] Show: {show}\n[crly] Title: {title}\n[crly] Episode: {ep} (Season {season})"
     )
+
+    # Update the episode watched status
+    Store.update_episode(index=index, data={'watched': True})
 
     # Start streamlink
     Store.update_state({'playing': os.getpid()})

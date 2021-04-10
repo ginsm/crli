@@ -19,7 +19,8 @@ def _episode_props(episode):
       'episode': get_prop('crunchyroll:episodeNumber', "1"),
       'season': get_prop('crunchyroll:season', "1"),
       'link': get_prop("link"),
-      'date': get_prop("crunchyroll:premiumPubDate")
+      'date': get_prop("crunchyroll:premiumPubDate"),
+      'watched': False
   }
 
 
