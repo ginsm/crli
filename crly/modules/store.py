@@ -53,6 +53,13 @@ def _update_show(data={}, new_data={}):
     shows.insert(new_data)
 
 
+def _update_episode(index=0, data={}):
+  if bool(data):
+    [episodes] = _fetch_show("episodes")
+    episodes[index].update(data)
+    _update_show(data={'episodes': episodes})
+
+
 # Exposed methods (getters)
 # -----------
 def _fetch_state(*args):
@@ -92,6 +99,7 @@ Store = DotMap({
     'init_state': _init_state,
     'update_show': _update_show,
     'update_state': _update_state,
+    'update_episode': _update_episode,
     'fetch': {
         'state': _fetch_state,
         'show': _fetch_show,
