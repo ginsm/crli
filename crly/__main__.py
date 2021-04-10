@@ -16,8 +16,6 @@ Options:
   -v, --version            Print the current version"""
 
 import sys
-import os
-import json
 import atexit
 
 from docopt import docopt
@@ -25,13 +23,11 @@ from docopt import docopt
 from .modules.utility import Utility
 
 # Set root path variable (used in Store)
-path = Utility.get_path(__file__)
-Utility.set_env('root_path', path)
+Utility.set_env('root_path', Utility.get_path(__file__))
 
 from .modules.store import Store
 from .modules.error import Error
 from .modules.handler import Handler
-from .modules.feed import Feed
 
 
 def main():
@@ -57,7 +53,7 @@ def main():
   Error.check.no_arguments_issue_help(sys.argv, __doc__)
 
   # Initialize docopt
-  options = docopt(__doc__, help=True, version='crly v0.1.0')
+  options = docopt(__doc__, help=True, version='crly v0.1.1')
 
   # The order in which option handlers should execute
   option_priority = [
@@ -75,8 +71,6 @@ def main():
 
       if method:
         method(value, options)
-      else:
-        print(f"Error: Option '{opt}' hasn't been implemented yet!")
 
 
 if __name__ == '__main__':
