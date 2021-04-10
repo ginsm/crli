@@ -6,6 +6,7 @@ from dotmap import DotMap
 from .store import Store
 from .feed import Feed
 from .error import Error
+from .streamlink import Streamlink
 
 
 # Option Handlers
@@ -68,36 +69,13 @@ def _play(value=None, options={}):
   [show, quality, autoplay] = Store.fetch.state("show", "quality", "autoplay")
   Error.check.must_select_show(show)
 
-  def play_episode(show="", quality="best"):
-    # Get episode and props
-    episode = Store.fetch.episode()
-    [ep, season, title, link, index] = [
-        episode.get("episode"),
-        episode.get("season"),
-        episode.get("title"),
-        episode.get("link"),
-        episode.get("index")
-    ]
-
-    # Alert the user about what content is playing
-    print(
-        f"[crly] Launching media player...\n[crly] Show: {show}\n[crly] Title: {title}\n[crly] Episode: {ep} (Season {season})"
-    )
-
-    # Update the episode watched status
-    Store.update_episode(index=index, data={'watched': True})
-
-    # Start streamlink
-    Store.update_state({'playing': os.getpid()})
-    subprocess.call(["streamlink", link, quality])
-
   if autoplay:
     while True:
       print("[crly] Autoplay is enabled.")
-      play_episode(show, quality)
+      Streamlink.play(show, quality)
       _next()
   else:
-    play_episode(show, quality)
+    Streamlink.play(show, quality)
 
 
 def _next(value=None, options={}):
