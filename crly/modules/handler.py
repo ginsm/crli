@@ -69,9 +69,6 @@ def _episode(ep_num="1", options={}):
     episodes.update({'episode': data})
     Store.update_show(data=episodes)
     print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
-    return True
-
-  return False
 
 
 def _play(value=None, options={}):
@@ -126,7 +123,6 @@ def _next(value=None, options={}):
   # Store the new episode & episodes_data
   Store.update_show(data=episodes_data)
   print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
-  return
 
 
 def _info(value=None, options={}):

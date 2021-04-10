@@ -60,10 +60,14 @@ def _memoize(func):
   cache = dict()
 
   def memoized_fn(*args):
-    if args in cache:
-      return cache[args]
+    # Must remove lists and dicts in order to set as prop
+    sanitized = tuple(
+        [x for x in list(args) if type(x) is not dict and type(x) is not list])
+
+    if sanitized in cache:
+      return cache[sanitized]
     result = func(*args)
-    cache[args] = result
+    cache[sanitized] = result
     return result
 
   memoized_fn.__name__ = func.__name__
@@ -75,7 +79,7 @@ def _memoize(func):
 
 # Check if a show needs to be updated
 # -----------
-def _update_needed(show_data=[]):
+def _update_needed(show_data={}):
   if bool(show_data):
     current_time = datetime.now().timestamp()
     next_update = show_data.get("next_update")
