@@ -7,6 +7,7 @@ from .store import Store
 from .feed import Feed
 from .error import Error
 from .streamlink import Streamlink
+from .utility import Utility
 
 
 # Option Handlers
@@ -147,6 +148,24 @@ def _track(value=None, options={}):
   Store.update_state({'tracked': tracked})
 
 
+def _updates(value=None, options={}):
+  [tracked] = Store.fetch.state("tracked")
+  updated = []
+
+  for show in tracked:
+    episodes = Feed.get_episodes(show).get("episodes")
+    latest = episodes[-1]
+    recently_updated = Utility.date_within_n_days(latest.get("date"), 7)
+    if recently_updated and not latest.get("watched"):
+      updated.append(show)
+
+  if bool(updated):
+    print("[crly] Recently Updated Shows:")
+    print("\n".join(updated))
+  else:
+    print("[crly] There are no recently updated shows.")
+
+
 def _debug(value={}, options={}):
   print("<Debug Information>", options)
 
@@ -170,5 +189,6 @@ Handler = DotMap({
     'info': _info,
     'next': _next,
     'track': _track,
-    'playing': _playing
+    'playing': _playing,
+    'updates': _updates
 })
