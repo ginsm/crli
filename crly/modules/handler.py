@@ -160,7 +160,7 @@ def _updates(value=None, options={}):
       updated.append(show)
 
   if bool(updated):
-    print("[crly] Recently Updated Shows:")
+    print("[ Recently Updated Shows ]")
     print("\n".join(updated))
   else:
     print("[crly] There are no recently updated shows.")
