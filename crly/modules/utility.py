@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 import os
 
 from dateutil.parser import parse as parse_date
@@ -23,6 +24,14 @@ def _gen_next_update(date_string=""):
     else:
       now = now + rdelta(weekday=dt.weekday())
     return datetime.combine(now.date(), dt.time())
+
+
+def _date_within_n_days(date="", n=0):
+  date = parse_date(date)
+  now = datetime.now(date.tzinfo)
+  if date + timedelta(days=n) >= now >= date:
+    return True
+  return False
 
 
 # Paths
@@ -93,6 +102,7 @@ def _update_needed(show_data={}):
 Utility = DotMap({
     'gen_next_update': _gen_next_update,
     'date_to_ms': _date_to_ms,
+    'date_within_n_days': _date_within_n_days,
     'get_path': _get_path,
     'set_env': _set_env,
     'set_env_multi': _set_env_multi,
