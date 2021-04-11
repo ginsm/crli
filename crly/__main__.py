@@ -57,8 +57,8 @@ def main():
 
   # The order in which option handlers should execute
   option_priority = [
-      '--debug', '--show', '--episode', '--quality', '--next', '--info',
-      '--autoplay', '--play'
+      '--debug', '--show', '--episode', '--quality', '--next', '--track',
+      '--info', '--autoplay', '--play'
   ]
 
   # Option handler delegation

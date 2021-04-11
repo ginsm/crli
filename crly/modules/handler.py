@@ -134,6 +134,19 @@ def _autoplay(value=None, options={}):
   print(f"[crly] Autoplay has been turned {'off' if autoplay else 'on'}.")
 
 
+def _track(value=None, options={}):
+  [show, tracked] = Store.fetch.state("show", "tracked")
+
+  if show in tracked:
+    tracked.remove(show)
+    print(f"[crly] No longer tracking '{show}'.")
+  else:
+    tracked.append(show)
+    print(f"[crly] Now tracking '{show}'.")
+
+  Store.update_state({'tracked': tracked})
+
+
 def _debug(value={}, options={}):
   print("<Debug Information>", options)
 
@@ -156,5 +169,6 @@ Handler = DotMap({
     'autoplay': _autoplay,
     'info': _info,
     'next': _next,
+    'track': _track,
     'playing': _playing
 })
