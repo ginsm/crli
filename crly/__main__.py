@@ -1,16 +1,16 @@
 """Usage:
-  crly [--show <name>] [--info] [--episode <number>]
-       [--quality <quality>] [--play] [--next]
-       [--autoplay] [--debug] [--help | --version]
+  crly [--help | --version] [options]
 
 Options:
   -s, --show <name>        Select a show
-  -i, --info               Print information about the show
-  -e, --episode <number>   Select an episode
+  -e, --episode <number>   Select an episode (default: oldest ep)
   -q, --quality <quality>  Set the video quality (default: "best")
   -p, --play               Play the selected episode
-  -n, --next               Select the next episode
   -a, --autoplay           Autoplay episodes (default: false)
+  -n, --next               Select the next episode
+  -i, --info               Print information about the show
+  -t, --track              Begin tracking a show
+  -u, --updates            Check tracked shows for updates
   -d, --debug              Print debug information
   -h, --help               Print this help screen
   -v, --version            Print the current version"""
@@ -57,8 +57,8 @@ def main():
 
   # The order in which option handlers should execute
   option_priority = [
-      '--debug', '--show', '--episode', '--quality', '--next', '--info',
-      '--autoplay', '--play'
+      '--debug', '--show', '--episode', '--quality', '--next', '--track',
+      '--updates', '--info', '--autoplay', '--play'
   ]
 
   # Option handler delegation
