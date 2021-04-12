@@ -80,7 +80,7 @@ def _play(value=None, options={}):
   Error.check.must_select_show(show)
 
   if autoplay:
-    while True:
+    while Store.fetch.state("autoplay")[0]:
       print("[crly] Autoplay is enabled.")
       Streamlink.play(show, quality)
       _next()
