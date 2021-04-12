@@ -13,6 +13,9 @@ from .utility import Utility
 # Option Handlers
 # -----------
 def _show(show="", options={}):
+  # Disable command issuing while playing
+  Error.check.is_playing('--show')
+
   # Store the old show in case the new one doesn't exist
   [previous_show] = Store.fetch.state("show")
 
@@ -43,6 +46,9 @@ def _show(show="", options={}):
 
 
 def _episode(ep_num="1", options={}):
+  # Disable command issuing while playing
+  Error.check.is_playing('--episode')
+
   # Get the show name and episodes
   [show] = Store.fetch.state("show")
   Error.check.must_select_show(show)
@@ -66,6 +72,9 @@ def _episode(ep_num="1", options={}):
 
 
 def _play(value=None, options={}):
+  # Disable command issuing while playing
+  Error.check.is_playing('--play')
+
   # Get the show name and show data
   [show, quality, autoplay] = Store.fetch.state("show", "quality", "autoplay")
   Error.check.must_select_show(show)
@@ -80,9 +89,12 @@ def _play(value=None, options={}):
 
 
 def _next(value=None, options={}):
+  # Disable command issuing while playing
+  Error.check.is_playing('--next')
+
+  # Fetch the show and episode index
   [show] = Store.fetch.state("show")
   Error.check.must_select_show(show)
-
   [index] = Store.fetch.episode("index")
 
   # Get episodes from the feed

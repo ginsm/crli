@@ -36,11 +36,11 @@ def _must_select_show(show=''):
     )
 
 
-def _is_playing(playing=False):
+def _is_playing(cmd=""):
   [playing] = Store.fetch.state("playing")
   if playing:
     sys.exit(
-        "[crly] Error: Please close the current show before issuing commands.")
+        f"[crly] Error: Please close the current show before issuing '{cmd}'.")
 
 
 def _no_episodes(episodes=[], show="", previous_show=""):
