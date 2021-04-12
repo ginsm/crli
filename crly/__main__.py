@@ -44,10 +44,6 @@ def main():
   # Toggle playing at exit (pid locked)
   atexit.register(Handler.playing)
 
-  # Disables issuing of commands while playing a show
-  [playing] = Store.fetch.state("playing")
-  Error.check.is_playing(playing)
-
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
   Error.check.no_arguments_issue_help(sys.argv, __doc__)
