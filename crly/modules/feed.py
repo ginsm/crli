@@ -75,7 +75,10 @@ def _get_episodes(show=""):
       next_update = Utility.gen_next_update(last_updated)
       return {'episodes': episodes, 'next_update': next_update.timestamp()}
     else:
-      return {'next_update': old_episodes.get("next_update") + 604800}
+      return {
+          'episodes': episodes,
+          'next_update': old_episodes.get("next_update") + 604800
+      }
 
   return show_data
 
