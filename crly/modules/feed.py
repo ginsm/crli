@@ -77,7 +77,7 @@ def _get_episodes(show=""):
     else:
       return {
           'episodes': episodes,
-          'next_update': old_episodes.get("next_update") + 604800
+          'next_update': show_data.get("next_update") + 604800
       }
 
   return show_data
