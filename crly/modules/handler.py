@@ -71,26 +71,32 @@ def _episode(ep_num="1", options={}):
   print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
 
 
-def _play(value=None, options={}):
+def _play(value=None, options={}, check_playing=True):
   # Disable command issuing while playing
-  Error.check.is_playing('--play')
+  if check_playing:
+    Error.check.is_playing('--play')
 
   # Get the show name and show data
   [show, quality, autoplay] = Store.fetch.state("show", "quality", "autoplay")
   Error.check.must_select_show(show)
 
+  # Check if autoplay is enabled and alert
   if autoplay:
-    while Store.fetch.state("autoplay")[0]:
-      print("[crly] Autoplay is enabled.")
-      Streamlink.play(show, quality)
-      _next()
-  else:
-    Streamlink.play(show, quality)
+    print("[crly] Autoplay is enabled.")
+  Streamlink.play(show, quality)
+
+  # Check if autoplay is still enabled & play next episode
+  [autoplay] = Store.fetch.state("autoplay")
+  if autoplay:
+    print("[crly] Autoplay is enabled.")
+    _next(check_playing=False)
+    _play(check_playing=False)
 
 
-def _next(value=None, options={}):
+def _next(value=None, options={}, check_playing=True):
   # Disable command issuing while playing
-  Error.check.is_playing('--next')
+  if check_playing:
+    Error.check.is_playing('--next')
 
   # Fetch the show and episode index
   [show] = Store.fetch.state("show")
