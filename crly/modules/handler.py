@@ -126,7 +126,7 @@ def _info(value=None, options={}):
   [episode] = Store.fetch.episode("episode")
 
   # Get the episodes for the selected show
-  episodes = Feed.get_episodes(show).get("episodes")
+  episodes = Feed.get_episodes(show, silent=True).get("episodes")
 
   # List episodes
   print(f"[  '{show}' Episodes  ]")
@@ -164,8 +164,10 @@ def _updates(value=None, options={}):
   [tracked] = Store.fetch.state("tracked")
   updated = []
 
+  print("[crly] Checking for updates...")
+
   for show in tracked:
-    episodes = Feed.get_episodes(show).get("episodes")
+    episodes = Feed.get_episodes(show, silent=True).get("episodes")
     latest = episodes[-1]
     recently_updated = Utility.date_within_n_days(latest.get("date"), 7)
     if recently_updated and not latest.get("watched"):
