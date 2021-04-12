@@ -49,7 +49,7 @@ def main():
   Error.check.no_arguments_issue_help(sys.argv, __doc__)
 
   # Initialize docopt
-  options = docopt(__doc__, help=True, version='crly v0.2.1')
+  options = docopt(__doc__, help=True, version='crly v0.2.2')
 
   # The order in which option handlers should execute
   option_priority = [
