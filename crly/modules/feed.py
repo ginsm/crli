@@ -59,11 +59,12 @@ def _scrape_episodes(show='', old_amount=0):
   return sorted(episodes, key=lambda e: float(e['episode']))
 
 
-def _get_episodes(show=""):
+def _get_episodes(show="", silent=False):
   show_data = (Store.fetch.show(show=show) or {})
 
   if Utility.update_needed(show_data):
-    print("[crly] Retrieving show data...")
+    if not silent:
+      print("[crly] Retrieving show data...")
     old_episodes = (show_data.get("episodes") or [])
     episodes = old_episodes + _scrape_episodes(show, len(old_episodes))
 
