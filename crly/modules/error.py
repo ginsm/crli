@@ -37,6 +37,7 @@ def _must_select_show(show=''):
 
 
 def _is_playing(playing=False):
+  [playing] = Store.fetch.state("playing")
   if playing:
     sys.exit(
         "[crly] Error: Please close the current show before issuing commands.")
