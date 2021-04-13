@@ -31,7 +31,7 @@ from .modules.handler import Handler
 
 
 def main():
-  # Initialize state
+  # Initialize state database
   Store.init_state(
       default_state={
           'show': None,
@@ -41,15 +41,15 @@ def main():
           'tracked': [],
       })
 
-  # Toggle playing at exit (pid locked)
-  atexit.register(Handler.finish_playing)
-
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
   Error.check.no_arguments_issue_help(sys.argv, __doc__)
 
   # Initialize docopt
   options = docopt(__doc__, help=True, version='crly v0.2.2')
+
+  # Toggle playing at exit (pid locked)
+  atexit.register(Handler.finish_playing)
 
   # The order in which option handlers should execute
   option_priority = [
