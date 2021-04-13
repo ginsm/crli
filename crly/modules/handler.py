@@ -6,11 +6,16 @@ from dotmap import DotMap
 from .store import Store
 from .feed import Feed
 from .error import Error
+from .streamlink import Streamlink
+from .utility import Utility
 
 
 # Option Handlers
 # -----------
 def _show(show="", options={}):
+  # Disable command issuing while playing
+  Error.check.is_playing('--show')
+
   # Store the old show in case the new one doesn't exist
   [previous_show] = Store.fetch.state("show")
 
@@ -41,6 +46,9 @@ def _show(show="", options={}):
 
 
 def _episode(ep_num="1", options={}):
+  # Disable command issuing while playing
+  Error.check.is_playing('--episode')
+
   # Get the show name and episodes
   [show] = Store.fetch.state("show")
   Error.check.must_select_show(show)
@@ -63,37 +71,36 @@ def _episode(ep_num="1", options={}):
   print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
 
 
-def _play(value=None, options={}):
+def _play(value=None, options={}, check_playing=True):
+  # Disable command issuing while playing
+  if check_playing:
+    Error.check.is_playing('--play')
+
   # Get the show name and show data
   [show, quality, autoplay] = Store.fetch.state("show", "quality", "autoplay")
   Error.check.must_select_show(show)
 
-  def play_episode(show="", quality="best"):
-    [ep, season, title, link] = Store.fetch.episode("episode", "season",
-                                                    "title", "link")
-
-    # Alert the user about what content is playing
-    print(
-        f"[crly] Launching media player...\n[crly] Show: {show}\n[crly] Title: {title}\n[crly] Episode: {ep} (Season {season})"
-    )
-
-    # Start streamlink
-    Store.update_state({'playing': os.getpid()})
-    subprocess.call(["streamlink", link, quality])
-
+  # Check if autoplay is enabled and alert
   if autoplay:
-    while True:
-      print("[crly] Autoplay is enabled.")
-      play_episode(show, quality)
-      _next()
-  else:
-    play_episode(show, quality)
+    print("[crly] Autoplay is enabled.")
+  Streamlink.play(show, quality)
+
+  # Check if autoplay is still enabled & play next episode
+  [autoplay] = Store.fetch.state("autoplay")
+  if autoplay:
+    print("[crly] Autoplay is enabled.")
+    _next(check_playing=False)
+    _play(check_playing=False)
 
 
-def _next(value=None, options={}):
+def _next(value=None, options={}, check_playing=True):
+  # Disable command issuing while playing
+  if check_playing:
+    Error.check.is_playing('--next')
+
+  # Fetch the show and episode index
   [show] = Store.fetch.state("show")
   Error.check.must_select_show(show)
-
   [index] = Store.fetch.episode("index")
 
   # Get episodes from the feed
@@ -125,7 +132,7 @@ def _info(value=None, options={}):
   [episode] = Store.fetch.episode("episode")
 
   # Get the episodes for the selected show
-  episodes = Feed.get_episodes(show).get("episodes")
+  episodes = Feed.get_episodes(show, silent=True).get("episodes")
 
   # List episodes
   print(f"[  '{show}' Episodes  ]")
@@ -146,8 +153,43 @@ def _autoplay(value=None, options={}):
   print(f"[crly] Autoplay has been turned {'off' if autoplay else 'on'}.")
 
 
+def _track(value=None, options={}):
+  [show, tracked] = Store.fetch.state("show", "tracked")
+
+  if show in tracked:
+    tracked.remove(show)
+    print(f"[crly] No longer tracking '{show}'.")
+  else:
+    tracked.append(show)
+    print(f"[crly] Now tracking '{show}'.")
+
+  Store.update_state({'tracked': tracked})
+
+
+def _updates(value=None, options={}):
+  [tracked] = Store.fetch.state("tracked")
+  updated = []
+
+  print("[crly] Checking for updates...")
+
+  for show in tracked:
+    episodes = Feed.get_episodes(show, silent=True).get("episodes")
+    latest = episodes[-1]
+    recently_updated = Utility.date_within_n_days(latest.get("date"), 7)
+    if recently_updated and not latest.get("watched"):
+      updated.append(show)
+
+  if bool(updated):
+    print("[ Recently Updated Shows ]")
+    print("\n".join(updated))
+  else:
+    print("[crly] There are no recently updated shows.")
+
+
 def _debug(value={}, options={}):
   print("<Debug Information>", options)
+  print("<State>", Store.fetch.state())
+  print("<Episode>", Store.fetch.episode())
 
 
 # Exit Handler
@@ -168,5 +210,7 @@ Handler = DotMap({
     'autoplay': _autoplay,
     'info': _info,
     'next': _next,
-    'playing': _playing
+    'track': _track,
+    'playing': _playing,
+    'updates': _updates
 })

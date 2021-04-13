@@ -19,7 +19,8 @@ def _episode_props(episode):
       'episode': get_prop('crunchyroll:episodeNumber', "1"),
       'season': get_prop('crunchyroll:season', "1"),
       'link': get_prop("link"),
-      'date': get_prop("crunchyroll:premiumPubDate")
+      'date': get_prop("crunchyroll:premiumPubDate"),
+      'watched': False
   }
 
 
@@ -58,11 +59,12 @@ def _scrape_episodes(show='', old_amount=0):
   return sorted(episodes, key=lambda e: float(e['episode']))
 
 
-def _get_episodes(show=""):
+def _get_episodes(show="", silent=False):
   show_data = (Store.fetch.show(show=show) or {})
 
   if Utility.update_needed(show_data):
-    print("[crly] Retrieving show data...")
+    if not silent:
+      print("[crly] Retrieving show data...")
     old_episodes = (show_data.get("episodes") or [])
     episodes = old_episodes + _scrape_episodes(show, len(old_episodes))
 
@@ -74,7 +76,10 @@ def _get_episodes(show=""):
       next_update = Utility.gen_next_update(last_updated)
       return {'episodes': episodes, 'next_update': next_update.timestamp()}
     else:
-      return {'next_update': old_episodes.get("next_update") + 604800}
+      return {
+          'episodes': episodes,
+          'next_update': show_data.get("next_update") + 604800
+      }
 
   return show_data
 

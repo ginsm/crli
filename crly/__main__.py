@@ -1,16 +1,16 @@
 """Usage:
-  crly [--show <name>] [--info] [--episode <number>]
-       [--quality <quality>] [--play] [--next]
-       [--autoplay] [--debug] [--help | --version]
+  crly [--help | --version] [options]
 
 Options:
   -s, --show <name>        Select a show
-  -i, --info               Print information about the show
-  -e, --episode <number>   Select an episode
+  -e, --episode <number>   Select an episode (default: oldest ep)
   -q, --quality <quality>  Set the video quality (default: "best")
   -p, --play               Play the selected episode
-  -n, --next               Select the next episode
   -a, --autoplay           Autoplay episodes (default: false)
+  -n, --next               Select the next episode
+  -i, --info               Print information about the show
+  -t, --track              Begin tracking a show
+  -u, --updates            Check tracked shows for updates
   -d, --debug              Print debug information
   -h, --help               Print this help screen
   -v, --version            Print the current version"""
@@ -44,21 +44,17 @@ def main():
   # Toggle playing at exit (pid locked)
   atexit.register(Handler.playing)
 
-  # Disables issuing of commands while playing a show
-  [playing] = Store.fetch.state("playing")
-  Error.check.is_playing(playing)
-
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
   Error.check.no_arguments_issue_help(sys.argv, __doc__)
 
   # Initialize docopt
-  options = docopt(__doc__, help=True, version='crly v0.1.1')
+  options = docopt(__doc__, help=True, version='crly v0.2.2')
 
   # The order in which option handlers should execute
   option_priority = [
-      '--debug', '--show', '--episode', '--quality', '--next', '--info',
-      '--autoplay', '--play'
+      '--debug', '--show', '--episode', '--quality', '--next', '--track',
+      '--updates', '--info', '--autoplay', '--play'
   ]
 
   # Option handler delegation
