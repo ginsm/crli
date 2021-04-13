@@ -189,6 +189,7 @@ def _updates(value=None, options={}):
 def _debug(value={}, options={}):
   print("<Debug Information>", options)
   print("<State>", Store.fetch.state())
+  print("<Episode>", Store.fetch.episode())
 
 
 # Exit Handler
