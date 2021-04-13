@@ -194,7 +194,7 @@ def _debug(value={}, options={}):
 
 # Exit Handler
 # -----------
-def _playing():
+def _finish_playing():
   pid = os.getpid()
   [playing] = Store.fetch.state("playing")
   if pid == playing:
@@ -211,6 +211,6 @@ Handler = DotMap({
     'info': _info,
     'next': _next,
     'track': _track,
-    'playing': _playing,
+    'finish_playing': _finish_playing,
     'updates': _updates
 })

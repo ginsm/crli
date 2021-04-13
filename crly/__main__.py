@@ -42,7 +42,7 @@ def main():
       })
 
   # Toggle playing at exit (pid locked)
-  atexit.register(Handler.playing)
+  atexit.register(Handler.finish_playing)
 
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
@@ -53,18 +53,15 @@ def main():
 
   # The order in which option handlers should execute
   option_priority = [
-      '--debug', '--show', '--episode', '--quality', '--next', '--track',
-      '--updates', '--info', '--autoplay', '--play'
+      'debug', 'show', 'episode', 'quality', 'next', 'track', 'updates',
+      'info', 'autoplay', 'play'
   ]
 
   # Option handler delegation
-  for opt in option_priority:
-    value = options[opt]
+  for option in option_priority:
+    value = options[f"--{option}"]
     if value:
-      # Normalize method name and retrieve method
-      method_name = opt.removeprefix('--').replace('-', '_')
-      method = Handler.get(method_name)
-
+      method = Handler.get(option)
       if method:
         method(value, options)
 
