@@ -51,7 +51,7 @@ def _parse(xml=[], old_amount=0):
 
 # Exposed methods
 # -----------
-@Utility.memoize
+@Utility.decorator.memoize
 def _scrape_episodes(show='', old_amount=0):
   feed = _rss_feed(show)
   xml = _scrape(feed)
@@ -62,7 +62,7 @@ def _scrape_episodes(show='', old_amount=0):
 def _get_episodes(show="", silent=False):
   show_data = (Store.fetch.show(show=show) or {})
 
-  if Utility.update_needed(show_data):
+  if Utility.feed.update_needed(show_data):
     if not silent:
       print("[crly] Retrieving show data...")
     old_episodes = (show_data.get("episodes") or [])
@@ -73,7 +73,7 @@ def _get_episodes(show="", silent=False):
 
     if len(episodes) > len(old_episodes):
       last_updated = episodes[-1].get("date")
-      next_update = Utility.gen_next_update(last_updated)
+      next_update = Utility.date.gen_next_update(last_updated)
       return {'episodes': episodes, 'next_update': next_update.timestamp()}
     else:
       return {

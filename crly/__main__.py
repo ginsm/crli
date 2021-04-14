@@ -23,7 +23,7 @@ from docopt import docopt
 from .modules.utility import Utility
 
 # Set root path variable (used in Store)
-Utility.set_env('root_path', Utility.get_path(__file__))
+Utility.env.set_env('root_path', Utility.path.abs_dir(__file__))
 
 from .modules.store import Store
 from .modules.error import Error

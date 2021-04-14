@@ -7,7 +7,7 @@ from .utility import Utility
 
 # Initialize the database using the root path
 # -----------
-path = Utility.get_env('root_path')
+path = Utility.env.get_env('root_path')
 db = TinyDB(os.path.join(path, 'db.json'))
 
 

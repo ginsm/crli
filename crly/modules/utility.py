@@ -7,14 +7,8 @@ from dateutil.relativedelta import relativedelta as rdelta
 from dotmap import DotMap
 
 
-# Dates
+# Utility.date.<fn>
 # -----------
-def _date_to_ms(date_string=""):
-  if date_string:
-    return parse_date(date_string).timestamp()
-  return None
-
-
 def _gen_next_update(date_string=""):
   if date_string:
     dt = parse_date(date_string)
@@ -26,7 +20,7 @@ def _gen_next_update(date_string=""):
     return datetime.combine(now.date(), dt.time())
 
 
-def _date_within_n_days(date="", n=0):
+def _within_n_days(date="", n=0):
   date = parse_date(date)
   now = datetime.now(date.tzinfo)
   if date + timedelta(days=n) >= now >= date:
@@ -34,36 +28,23 @@ def _date_within_n_days(date="", n=0):
   return False
 
 
-# Paths
+# Utility.path.<fn>
 # -----------
-def _get_path(file):
+def _abs_dir(file):
   return os.path.dirname(os.path.realpath(file))
 
 
-# Environment setters/getters
+# Utility.env.<fn>
 # -----------
 def _set_env(name, value):
   os.environ[f"_crly_{name}"] = value
-
-
-def _set_env_multi(dictionary={}):
-  for key, value in dictionary.items():
-    if value:
-      _set_env(key, value)
 
 
 def _get_env(name):
   return os.environ.get(f"_crly_{name}")
 
 
-def _get_env_multi(*args):
-  output = {}
-  for arg in args:
-    output[arg] = _get_env(arg)
-  return output
-
-
-# Memoization
+# Utility.decorator.<fn>
 # -----------
 def _memoize(func):
   cache = dict()
@@ -86,7 +67,7 @@ def _memoize(func):
   return memoized_fn
 
 
-# Check if a show needs to be updated
+# Utility.feed.<fn>
 # -----------
 def _update_needed(show_data={}):
   if bool(show_data):
@@ -100,14 +81,21 @@ def _update_needed(show_data={}):
 # Expose methods
 # -----------
 Utility = DotMap({
-    'gen_next_update': _gen_next_update,
-    'date_to_ms': _date_to_ms,
-    'date_within_n_days': _date_within_n_days,
-    'get_path': _get_path,
-    'set_env': _set_env,
-    'set_env_multi': _set_env_multi,
-    'get_env': _get_env,
-    'get_env_multi': _get_env_multi,
-    'memoize': _memoize,
-    'update_needed': _update_needed
+    'date': {
+        'gen_next_update': _gen_next_update,
+        'within_n_days': _within_n_days,
+    },
+    'path': {
+        'abs_dir': _abs_dir,
+    },
+    'env': {
+        'set_env': _set_env,
+        'get_env': _get_env,
+    },
+    'decorator': {
+        'memoize': _memoize,
+    },
+    'feed': {
+        'update_needed': _update_needed
+    }
 })

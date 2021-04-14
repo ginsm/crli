@@ -175,7 +175,7 @@ def _updates(value=None, options={}):
   for show in tracked:
     episodes = Feed.get_episodes(show, silent=True).get("episodes")
     latest = episodes[-1]
-    recently_updated = Utility.date_within_n_days(latest.get("date"), 7)
+    recently_updated = Utility.date.within_n_days(latest.get("date"), 7)
     if recently_updated and not latest.get("watched"):
       updated.append(show)
 
