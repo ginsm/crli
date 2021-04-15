@@ -31,7 +31,6 @@ def _update_state(data={}):
   state = db.table("state")
   if bool(data):
     state.update(data, doc_ids=[1])
-  return state.get(doc_id=1)
 
 
 def _update_show(data={}, new_data={}):
@@ -54,9 +53,7 @@ def _update_episode(index=0, data={}):
 # Exposed methods (getters)
 # -----------
 def _fetch_state(*args):
-  # state object
   state = db.table("state").get(doc_id=1)
-  # allow for custom data fetches
   output = Utility.dict.destructure(state, args=args)
   return output if bool(output) else state
 
@@ -66,15 +63,12 @@ def _fetch_show(*args, show=''):
   if not show:
     [show] = _fetch_state("show")
 
-  # Retrieve the show's data
   shows = db.table("shows")
   show_data = shows.get(_query('show', show))
 
-  # If no previous data was found, return False
   if not bool(show_data):
     return False
 
-  # Allow for custom data fetches, otherwise return show's data
   output = Utility.dict.destructure(show_data, args)
   return output if bool(output) else show_data
 
