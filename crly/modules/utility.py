@@ -49,7 +49,7 @@ def _get_env(name):
 def _memoize(func):
   cache = dict()
 
-  def memoized_fn(*args):
+  def fn(*args):
     # Must remove lists and dicts in order to set as prop
     sanitized = tuple(
         [x for x in list(args) if type(x) is not dict and type(x) is not list])
@@ -60,11 +60,11 @@ def _memoize(func):
     cache[sanitized] = result
     return result
 
-  memoized_fn.__name__ = func.__name__
-  memoized_fn.__doc__ = func.__doc__
-  memoized_fn.__dict__.update(func.__dict__)
+  fn.__name__ = func.__name__
+  fn.__doc__ = func.__doc__
+  fn.__dict__.update(func.__dict__)
 
-  return memoized_fn
+  return fn
 
 
 # Utility.feed.<fn>
