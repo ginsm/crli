@@ -7,6 +7,15 @@ from dateutil.relativedelta import relativedelta as rdelta
 from dotmap import DotMap
 
 
+# Utility.dict.<fn>
+def _destructure_dict(dictionary={}, args=[]):
+  if len(args):
+    output = []
+    for arg in args:
+      output.append(dictionary.get(arg))
+    return output
+
+
 # Utility.date.<fn>
 # -----------
 def _gen_next_update(date_string=""):
@@ -81,6 +90,9 @@ def _update_needed(show_data={}):
 # Expose methods
 # -----------
 Utility = DotMap({
+    'dict': {
+        'destructure': _destructure_dict
+    },
     'date': {
         'gen_next_update': _gen_next_update,
         'within_n_days': _within_n_days,

@@ -11,19 +11,10 @@ path = Utility.env.get_env('root_path')
 db = TinyDB(os.path.join(path, 'db.json'))
 
 
-# Utility Functions
+# Query function
 # -----------
-def _query_show(value=''):
-  return Query().show == value
-
-
-# Allows for destructuring as a list
-def _destructure_dict(dictionary={}, args=[]):
-  if len(args):
-    output = []
-    for arg in args:
-      output.append(dictionary.get(arg))
-    return output
+def _query(prop='', value=''):
+  return Query()[prop] == value
 
 
 # Initializer
@@ -47,8 +38,8 @@ def _update_show(data={}, new_data={}):
   shows = db.table("shows")
   [show] = _fetch_state("show")
 
-  if shows.search(_query_show(show)):
-    shows.update(data, _query_show(show))
+  if shows.search(_query('show', show)):
+    shows.update(data, _query('show', show))
   elif bool(new_data):
     shows.insert(new_data)
 
@@ -66,7 +57,7 @@ def _fetch_state(*args):
   # state object
   state = db.table("state").get(doc_id=1)
   # allow for custom data fetches
-  output = _destructure_dict(state, args=args)
+  output = Utility.dict.destructure(state, args=args)
   return output if bool(output) else state
 
 
@@ -77,21 +68,21 @@ def _fetch_show(*args, show=''):
 
   # Retrieve the show's data
   shows = db.table("shows")
-  show_data = shows.get(_query_show(show))
+  show_data = shows.get(_query('show', show))
 
   # If no previous data was found, return False
   if not bool(show_data):
     return False
 
   # Allow for custom data fetches, otherwise return show's data
-  output = _destructure_dict(show_data, args)
+  output = Utility.dict.destructure(show_data, args)
   return output if bool(output) else show_data
 
 
 def _fetch_episode(*args):
   # The episode data is stored within
   [episode_data] = _fetch_show("episode")
-  output = _destructure_dict(episode_data, args)
+  output = Utility.dict.destructure(episode_data, args)
   return output if bool(output) else episode_data
 
 
