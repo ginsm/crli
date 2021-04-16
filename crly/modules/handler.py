@@ -10,7 +10,7 @@ from .streamlink import Streamlink
 from .utility import Utility
 
 
-# Option Handlers
+# ANCHOR Handler.<fn>
 # -----------
 def _show(show="", options={}):
   # Disable command issuing while playing
@@ -192,7 +192,7 @@ def _debug(value={}, options={}):
   print("<Episode>", Store.fetch.episode())
 
 
-# Exit Handler
+# ANCHOR - Exit Handler
 # -----------
 def _finish_playing():
   pid = os.getpid()
@@ -201,6 +201,8 @@ def _finish_playing():
     Store.update_state({'playing': False})
 
 
+# ANCHOR - Expose methods
+# -----------
 Handler = DotMap({
     'show': _show,
     'episode': _episode,

@@ -7,7 +7,7 @@ from .utility import Utility
 from .store import Store
 
 
-# Utility Functions
+# ANCHOR - Utility Function
 # -----------
 def _episode_props(episode):
   def get_prop(name, _default="None"):
@@ -24,7 +24,7 @@ def _episode_props(episode):
   }
 
 
-# Scraping & Parsing of Crunchy's RSS Feeds
+# ANCHOR - Scraping & Parsing of Crunchy's RSS Feeds
 # -----------
 def _rss_feed(show=""):
   return f"https://www.crunchyroll.com/{show}.rss"
@@ -49,8 +49,6 @@ def _parse(xml=[], old_amount=0):
     return print(e)
 
 
-# Exposed methods
-# -----------
 @Utility.decorator.memoize
 def _scrape_episodes(show='', old_amount=0):
   feed = _rss_feed(show)
@@ -59,6 +57,8 @@ def _scrape_episodes(show='', old_amount=0):
   return sorted(episodes, key=lambda e: float(e['episode']))
 
 
+# ANCHOR - Feed.<fn>
+# -----------
 def _get_episodes(show="", silent=False):
   show_data = (Store.fetch.show(show=show) or {})
 
@@ -84,8 +84,6 @@ def _get_episodes(show="", silent=False):
   return show_data
 
 
-# Expose via DotMap
-Feed = DotMap({
-    'scrape_episodes': _scrape_episodes,
-    'get_episodes': _get_episodes
-})
+# ANCHOR - Expose methods
+# -----------
+Feed = DotMap({'get_episodes': _get_episodes})

@@ -7,16 +7,17 @@ from dateutil.relativedelta import relativedelta as rdelta
 from dotmap import DotMap
 
 
-# Utility.dict.<fn>
+# ANCHOR - Utility.dict.<fn>
+# -----------
 def _destructure_dict(dictionary={}, args=[]):
+  output = []
   if len(args):
-    output = []
     for arg in args:
       output.append(dictionary.get(arg))
-    return output
+  return output
 
 
-# Utility.date.<fn>
+# ANCHOR - Utility.date.<fn>
 # -----------
 def _gen_next_update(date_string=""):
   if date_string:
@@ -37,13 +38,13 @@ def _within_n_days(date="", n=0):
   return False
 
 
-# Utility.path.<fn>
+# ANCHOR - Utility.path.<fn>
 # -----------
 def _abs_dir(file):
   return os.path.dirname(os.path.realpath(file))
 
 
-# Utility.env.<fn>
+# ANCHOR - Utility.env.<fn>
 # -----------
 def _set_env(name, value):
   os.environ[f"_crly_{name}"] = value
@@ -53,7 +54,7 @@ def _get_env(name):
   return os.environ.get(f"_crly_{name}")
 
 
-# Utility.decorator.<fn>
+# ANCHOR - Utility.decorator.<fn>
 # -----------
 def _memoize(func):
   cache = dict()
@@ -76,7 +77,7 @@ def _memoize(func):
   return fn
 
 
-# Utility.feed.<fn>
+# ANCHOR - Utility.feed.<fn>
 # -----------
 def _update_needed(show_data={}):
   if bool(show_data):
@@ -87,7 +88,7 @@ def _update_needed(show_data={}):
     return True
 
 
-# Expose methods
+# ANCHOR - Expose methods
 # -----------
 Utility = DotMap({
     'dict': {

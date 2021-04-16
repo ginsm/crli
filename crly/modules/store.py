@@ -11,13 +11,13 @@ path = Utility.env.get_env('root_path')
 db = TinyDB(os.path.join(path, 'db.json'))
 
 
-# Query function
+# ANCHOR - Query function
 # -----------
 def _query(prop='', value=''):
   return Query()[prop] == value
 
 
-# Initializer
+# ANCHOR - Store.<fn>  (setters)
 # -----------
 def _init_state(default_state={}):
   state = db.table("state")
@@ -25,8 +25,6 @@ def _init_state(default_state={}):
     state.insert(default_state)
 
 
-# Exposed methods (setters)
-# -----------
 def _update_state(data={}):
   state = db.table("state")
   if bool(data):
@@ -50,7 +48,7 @@ def _update_episode(index=0, data={}):
     _update_show(data={'episodes': episodes})
 
 
-# Exposed methods (getters)
+# ANCHOR - Store.fetch.<fn>  (getters)
 # -----------
 def _fetch_state(*args):
   state = db.table("state").get(doc_id=1)
@@ -59,7 +57,7 @@ def _fetch_state(*args):
 
 
 def _fetch_show(*args, show=''):
-  # Allow for specified show
+  # Allow for a specified show
   if not show:
     [show] = _fetch_state("show")
 
@@ -74,12 +72,14 @@ def _fetch_show(*args, show=''):
 
 
 def _fetch_episode(*args):
-  # The episode data is stored within
+  # Episode data is stored in the show dictionary
   [episode_data] = _fetch_show("episode")
   output = Utility.dict.destructure(episode_data, args)
   return output if bool(output) else episode_data
 
 
+# ANCHOR - Expose methods
+# -----------
 Store = DotMap({
     'init_state': _init_state,
     'update_show': _update_show,

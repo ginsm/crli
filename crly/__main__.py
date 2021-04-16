@@ -51,7 +51,7 @@ def main():
   # Toggle playing at exit (pid locked)
   atexit.register(Handler.finish_playing)
 
-  # The order in which option handlers should execute
+  # Option handler execution order
   option_priority = [
       'debug', 'show', 'episode', 'quality', 'next', 'track', 'updates',
       'info', 'autoplay', 'play'
