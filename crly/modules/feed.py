@@ -7,7 +7,7 @@ from .utility import Utility
 from .store import Store
 
 
-# Utility Functions
+# ANCHOR - Utility Function
 # -----------
 def _episode_props(episode):
   def get_prop(name, _default="None"):
@@ -24,7 +24,7 @@ def _episode_props(episode):
   }
 
 
-# Scraping & Parsing of Crunchy's RSS Feeds
+# ANCHOR - Scraping & Parsing of Crunchy's RSS Feeds
 # -----------
 def _rss_feed(show=""):
   return f"https://www.crunchyroll.com/{show}.rss"
@@ -49,9 +49,7 @@ def _parse(xml=[], old_amount=0):
     return print(e)
 
 
-# Exposed methods
-# -----------
-@Utility.memoize
+@Utility.decorator.memoize
 def _scrape_episodes(show='', old_amount=0):
   feed = _rss_feed(show)
   xml = _scrape(feed)
@@ -59,10 +57,12 @@ def _scrape_episodes(show='', old_amount=0):
   return sorted(episodes, key=lambda e: float(e['episode']))
 
 
+# ANCHOR - Feed.<fn>
+# -----------
 def _get_episodes(show="", silent=False):
   show_data = (Store.fetch.show(show=show) or {})
 
-  if Utility.update_needed(show_data):
+  if Utility.feed.update_needed(show_data):
     if not silent:
       print("[crly] Retrieving show data...")
     old_episodes = (show_data.get("episodes") or [])
@@ -73,7 +73,7 @@ def _get_episodes(show="", silent=False):
 
     if len(episodes) > len(old_episodes):
       last_updated = episodes[-1].get("date")
-      next_update = Utility.gen_next_update(last_updated)
+      next_update = Utility.date.gen_next_update(last_updated)
       return {'episodes': episodes, 'next_update': next_update.timestamp()}
     else:
       return {
@@ -84,8 +84,6 @@ def _get_episodes(show="", silent=False):
   return show_data
 
 
-# Expose via DotMap
-Feed = DotMap({
-    'scrape_episodes': _scrape_episodes,
-    'get_episodes': _get_episodes
-})
+# ANCHOR - Expose methods
+# -----------
+Feed = DotMap({'get_episodes': _get_episodes})
