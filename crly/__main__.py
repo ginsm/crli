@@ -46,7 +46,7 @@ def main():
   Error.check.no_arguments_issue_help(sys.argv, __doc__)
 
   # Initialize docopt
-  options = docopt(__doc__, help=True, version='crly v0.2.2')
+  options = docopt(__doc__, help=True, version='crly v0.2.3')
 
   # Toggle playing at exit (pid locked)
   atexit.register(Handler.finish_playing)
