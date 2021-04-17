@@ -42,7 +42,8 @@ def _scrape(feed=""):
 def _parse(xml=[], old_amount=0):
   episodes = xml.findAll('item')
   try:
-    parsed_episodes = map(_episode_props, episodes[old_amount::])
+    new_episodes_amount = len(episodes) - old_amount
+    parsed_episodes = map(_episode_props, episodes[0:new_episodes_amount])
     return list(parsed_episodes)
   except Exception as e:
     print("XML parsing has failed. See exception:")
