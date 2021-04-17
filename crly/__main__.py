@@ -3,10 +3,10 @@
 
 Options:
   -s, --show <name>        Select a show
-  -e, --episode <number>   Select an episode (default: oldest ep)
-  -q, --quality <quality>  Set the video quality (default: "best")
+  -e, --episode <number>   Select an episode
+  -q, --quality <quality>  Set the video quality
   -p, --play               Play the selected episode
-  -a, --autoplay           Autoplay episodes (default: false)
+  -a, --autoplay           Autoplay episodes
   -n, --next               Select the next episode
   -i, --info               Print information about the show
   -t, --track              Begin tracking a show
