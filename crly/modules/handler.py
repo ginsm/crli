@@ -10,7 +10,7 @@ from .streamlink import Streamlink
 from .utility import Utility
 
 
-# Option Handlers
+# ANCHOR Handler.<fn>
 # -----------
 def _show(show="", options={}):
   # Disable command issuing while playing
@@ -23,25 +23,29 @@ def _show(show="", options={}):
   Store.update_state({'show': show})
   episodes = Feed.get_episodes(show)
 
-  # Episodes couldn't be found; stop execution
+  # Episodes couldn't be found; save previous show to state & exit
   Error.check.no_episodes(episodes, show, previous_show)
 
-  # Show exists
+  # Show already exists
   if bool(Store.fetch.show(show=show)):
     Store.update_show(data=episodes)
+
+    # Alert the user
     print(f"[crly] Show is now set to '{show}'.")
 
   # Show does not exist
   else:
-    # Build the show data to store it
+    # Build the show data
     episode = episodes.get("episodes")[0]
-    ep_num = episode.get("episode")
+    episode['index'] = 0
     data = {'show': show, 'episode': episode}
-    data['episode']['index'] = 0
     data.update(episodes)
 
     # Store the show with its data
     Store.update_show(new_data=data)
+
+    # Alert the user
+    ep_num = episode.get("episode")
     print(f"[crly] Show is now set to '{show}', episode {ep_num}.")
 
 
@@ -156,6 +160,7 @@ def _autoplay(value=None, options={}):
 def _track(value=None, options={}):
   [show, tracked] = Store.fetch.state("show", "tracked")
 
+  # Inserts or removes the given show from the tracked array
   if show in tracked:
     tracked.remove(show)
     print(f"[crly] No longer tracking '{show}'.")
@@ -173,12 +178,16 @@ def _updates(value=None, options={}):
   print("[crly] Checking for updates...")
 
   for show in tracked:
+    # Get the latest episode
     episodes = Feed.get_episodes(show, silent=True).get("episodes")
     latest = episodes[-1]
-    recently_updated = Utility.date_within_n_days(latest.get("date"), 7)
+
+    # Check if it was recently released and add it to updated arr
+    recently_updated = Utility.date.within_n_days(latest.get("date"), 7)
     if recently_updated and not latest.get("watched"):
       updated.append(show)
 
+  # Alert the user
   if bool(updated):
     print("[ Recently Updated Shows ]")
     print("\n".join(updated))
@@ -192,15 +201,17 @@ def _debug(value={}, options={}):
   print("<Episode>", Store.fetch.episode())
 
 
-# Exit Handler
+# ANCHOR - Exit Handler
 # -----------
-def _playing():
+def _finish_playing():
   pid = os.getpid()
   [playing] = Store.fetch.state("playing")
   if pid == playing:
     Store.update_state({'playing': False})
 
 
+# ANCHOR - Expose methods
+# -----------
 Handler = DotMap({
     'show': _show,
     'episode': _episode,
@@ -211,6 +222,6 @@ Handler = DotMap({
     'info': _info,
     'next': _next,
     'track': _track,
-    'playing': _playing,
+    'finish_playing': _finish_playing,
     'updates': _updates
 })

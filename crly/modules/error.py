@@ -6,7 +6,7 @@ from dotmap import DotMap
 from .store import Store
 
 
-# Exposed Methods
+# ANCHOR - Error.check.<fn>
 # -----------
 def _required_native_packages(required_pkgs=[]):
   missing_pkg = []
@@ -61,6 +61,8 @@ def _episode_not_found(show="", ep_num=0, data={}):
     )
 
 
+# ANCHOR - Expose methods
+# -----------
 Error = DotMap({
     'check': {
         'must_select_show': _must_select_show,

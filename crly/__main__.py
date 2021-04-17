@@ -3,10 +3,10 @@
 
 Options:
   -s, --show <name>        Select a show
-  -e, --episode <number>   Select an episode (default: oldest ep)
-  -q, --quality <quality>  Set the video quality (default: "best")
+  -e, --episode <number>   Select an episode
+  -q, --quality <quality>  Set the video quality
   -p, --play               Play the selected episode
-  -a, --autoplay           Autoplay episodes (default: false)
+  -a, --autoplay           Autoplay episodes
   -n, --next               Select the next episode
   -i, --info               Print information about the show
   -t, --track              Begin tracking a show
@@ -23,7 +23,7 @@ from docopt import docopt
 from .modules.utility import Utility
 
 # Set root path variable (used in Store)
-Utility.set_env('root_path', Utility.get_path(__file__))
+Utility.env.set_env('root_path', Utility.path.abs_dir(__file__))
 
 from .modules.store import Store
 from .modules.error import Error
@@ -31,7 +31,7 @@ from .modules.handler import Handler
 
 
 def main():
-  # Initialize state
+  # Initialize state database
   Store.init_state(
       default_state={
           'show': None,
@@ -41,30 +41,27 @@ def main():
           'tracked': [],
       })
 
-  # Toggle playing at exit (pid locked)
-  atexit.register(Handler.playing)
-
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
   Error.check.no_arguments_issue_help(sys.argv, __doc__)
 
   # Initialize docopt
-  options = docopt(__doc__, help=True, version='crly v0.2.2')
+  options = docopt(__doc__, help=True, version='crly v0.2.3')
 
-  # The order in which option handlers should execute
+  # Toggle playing at exit (pid locked)
+  atexit.register(Handler.finish_playing)
+
+  # Option handler execution order
   option_priority = [
-      '--debug', '--show', '--episode', '--quality', '--next', '--track',
-      '--updates', '--info', '--autoplay', '--play'
+      'debug', 'show', 'episode', 'quality', 'next', 'track', 'updates',
+      'info', 'autoplay', 'play'
   ]
 
   # Option handler delegation
-  for opt in option_priority:
-    value = options[opt]
+  for option in option_priority:
+    value = options[f"--{option}"]
     if value:
-      # Normalize method name and retrieve method
-      method_name = opt.removeprefix('--').replace('-', '_')
-      method = Handler.get(method_name)
-
+      method = Handler.get(option)
       if method:
         method(value, options)
 

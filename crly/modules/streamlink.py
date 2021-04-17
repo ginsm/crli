@@ -6,6 +6,8 @@ from dotmap import DotMap
 from .store import Store
 
 
+# ANCHOR - Streamlink.<fn>
+# -----------
 def _play(show="", quality="best"):
   # Get episode and props
   episode = Store.fetch.episode()
@@ -30,4 +32,6 @@ def _play(show="", quality="best"):
   subprocess.call(["streamlink", link, quality])
 
 
+# ANCHOR - Expose methods
+# -----------
 Streamlink = DotMap({'play': _play})
