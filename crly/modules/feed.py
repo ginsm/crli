@@ -2,6 +2,7 @@ import requests
 
 from bs4 import BeautifulSoup
 from dotmap import DotMap
+from colorama import Fore, Style
 
 from .utility import Utility
 from .store import Store
@@ -65,7 +66,9 @@ def _get_episodes(show="", silent=False):
 
   if Utility.feed.update_needed(show_data):
     if not silent:
-      print("[crly] Retrieving show data...")
+      print(
+          f"{Fore.WHITE}{Style.DIM}[crly] Retrieving show data...{Style.RESET_ALL}"
+      )
     old_episodes = (show_data.get("episodes") or [])
     episodes = old_episodes + _scrape_episodes(show, len(old_episodes))
 

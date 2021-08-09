@@ -2,6 +2,7 @@ import os
 import subprocess
 
 from dotmap import DotMap
+from colorama import Fore, Style
 
 from .store import Store
 
@@ -21,7 +22,7 @@ def _play(show="", quality="best"):
 
   # Alert the user about what content is playing
   print(
-      f"[crly] Launching media player...\n[crly] Show: {show}\n[crly] Title: {title}\n[crly] Episode: {ep} (Season {season})"
+      f"{Fore.WHITE}{Style.DIM}[crly] Launching media player...{Style.RESET_ALL}\n[crly] Show: {Fore.YELLOW}{show}{Style.RESET_ALL}\n[crly] Title: {Fore.YELLOW}{title}{Style.RESET_ALL}\n[crly] Episode: {Fore.YELLOW}{ep} (Season {season}{Style.RESET_ALL})"
   )
 
   # Update the episode watched status

@@ -43,10 +43,10 @@ def main():
 
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
-  Error.check.no_arguments_issue_help(sys.argv, __doc__)
+  Error.check.no_arguments_dispatch_help(sys.argv, __doc__)
 
   # Initialize docopt
-  options = docopt(__doc__, help=True, version='crly v0.2.3')
+  options = docopt(__doc__, help=True, version='crly v0.2.4')
 
   # Toggle playing at exit (pid locked)
   atexit.register(Handler.finish_playing)

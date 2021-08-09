@@ -2,6 +2,7 @@ import subprocess
 import os
 
 from dotmap import DotMap
+from colorama import Fore, Style
 
 from .store import Store
 from .feed import Feed
@@ -31,7 +32,7 @@ def _show(show="", options={}):
     Store.update_show(data=episodes)
 
     # Alert the user
-    print(f"[crly] Show is now set to '{show}'.")
+    print(f"[crly] Show is now set to {Fore.YELLOW}{show}{Style.RESET_ALL}.")
 
   # Show does not exist
   else:
@@ -46,7 +47,9 @@ def _show(show="", options={}):
 
     # Alert the user
     ep_num = episode.get("episode")
-    print(f"[crly] Show is now set to '{show}', episode {ep_num}.")
+    print(
+        f"[crly] Show is now set to {Fore.YELLOW}{show}{Style.RESET_ALL}, episode {Fore.YELLOW}{ep_num}{Style.RESET_ALL}."
+    )
 
 
 def _episode(ep_num="1", options={}):
@@ -72,7 +75,9 @@ def _episode(ep_num="1", options={}):
   # Otherwise, save that data to the show object
   episodes.update({'episode': data})
   Store.update_show(data=episodes)
-  print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
+  print(
+      f"[crly] Episode is now set to {Fore.YELLOW}{ep_num}{Style.RESET_ALL} for {Fore.YELLOW}{show}{Style.RESET_ALL}."
+  )
 
 
 def _play(value=None, options={}, check_playing=True):
@@ -86,13 +91,13 @@ def _play(value=None, options={}, check_playing=True):
 
   # Check if autoplay is enabled and alert
   if autoplay:
-    print("[crly] Autoplay is enabled.")
+    print(f"{Fore.MAGENTA}[crly] Autoplay is enabled.{Style.RESET_ALL}")
   Streamlink.play(show, quality)
 
   # Check if autoplay is still enabled & play next episode
   [autoplay] = Store.fetch.state("autoplay")
   if autoplay:
-    print("[crly] Autoplay is enabled.")
+    print(f"{Fore.MAGENTA}[crly] Autoplay is still enabled.{Style.RESET_ALL}")
     _next(check_playing=False)
     _play(check_playing=False)
 
@@ -124,7 +129,9 @@ def _next(value=None, options={}, check_playing=True):
 
   # Store the new episode & episodes_data
   Store.update_show(data=episodes_data)
-  print(f"[crly] Episode is now set to '{ep_num}' for {show}.")
+  print(
+      f"[crly] Episode is now set to {Fore.YELLOW}{ep_num}{Style.RESET_ALL} for {Fore.YELLOW}{show}{Style.RESET_ALL}."
+  )
 
 
 def _info(value=None, options={}):
@@ -139,11 +146,11 @@ def _info(value=None, options={}):
   episodes = Feed.get_episodes(show, silent=True).get("episodes")
 
   # List episodes
-  print(f"[  '{show}' Episodes  ]")
+  print(f"{Fore.MAGENTA}[ Episodes for '{show}' ]{Style.RESET_ALL}")
   for ep in episodes:
     info = f"{ep['episode']}. {ep['title']}"
     if ep['episode'] == episode:
-      info = "* " + info
+      info = info + f" {Fore.YELLOW}[selected]{Style.RESET_ALL}"
     print(info)
 
 
@@ -154,7 +161,9 @@ def _quality(value="best", options={}):
 def _autoplay(value=None, options={}):
   [autoplay] = Store.fetch.state("autoplay")
   Store.update_state({'autoplay': (not autoplay)})
-  print(f"[crly] Autoplay has been turned {'off' if autoplay else 'on'}.")
+  on = f"{Fore.GREEN}on{Style.RESET_ALL}"
+  off = f"{Fore.RED}{Style.BRIGHT}off{Style.RESET_ALL}"
+  print(f"[crly] Autoplay has been turned {off if autoplay else on}.")
 
 
 def _track(value=None, options={}):
@@ -163,19 +172,22 @@ def _track(value=None, options={}):
   # Inserts or removes the given show from the tracked array
   if show in tracked:
     tracked.remove(show)
-    print(f"[crly] No longer tracking '{show}'.")
+    print(f"[crly] No longer tracking {Fore.YELLOW}{show}{Style.RESET_ALL}.")
   else:
     tracked.append(show)
-    print(f"[crly] Now tracking '{show}'.")
+    print(f"[crly] Now tracking {Fore.YELLOW}{show}{Style.RESET_ALL}.")
 
   Store.update_state({'tracked': tracked})
 
 
 def _updates(value=None, options={}):
-  [tracked] = Store.fetch.state("tracked")
+  [selected_show, tracked] = Store.fetch.state("show", "tracked")
   updated = []
+  not_updated = []
 
-  print("[crly] Checking for updates...")
+  print(
+      f"{Fore.WHITE}{Style.DIM}[crly] Checking for updates...{Style.RESET_ALL}"
+  )
 
   for show in tracked:
     # Get the latest episode
@@ -184,15 +196,17 @@ def _updates(value=None, options={}):
 
     # Check if it was recently released and add it to updated arr
     recently_updated = Utility.date.within_n_days(latest.get("date"), 7)
+
+    if show == selected_show:
+      show = f"{show} {Fore.YELLOW}[selected]{Style.RESET_ALL}"
     if recently_updated and not latest.get("watched"):
-      updated.append(show)
+      updated.append(f"{show} {Fore.GREEN}[updated]{Style.RESET_ALL}")
+    else:
+      not_updated.append(f"{show}")
 
   # Alert the user
-  if bool(updated):
-    print("[ Recently Updated Shows ]")
-    print("\n".join(updated))
-  else:
-    print("[crly] There are no recently updated shows.")
+  print(f"{Fore.MAGENTA}[ Shows being tracked ]{Style.RESET_ALL}")
+  print("\n".join(updated + not_updated))
 
 
 def _debug(value={}, options={}):
