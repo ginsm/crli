@@ -4,7 +4,6 @@
 Options:
   -s, --show <name>        Select a show
   -e, --episode <number>   Select an episode
-  -q, --quality <quality>  Set the video quality
   -p, --play               Play the selected episode
   -a, --autoplay           Autoplay episodes
   -n, --next               Select the next episode
@@ -32,14 +31,12 @@ from .modules.handler import Handler
 
 def main():
   # Initialize state database
-  Store.init_state(
-      default_state={
-          'show': None,
-          'quality': "best",
-          'autoplay': False,
-          'playing': False,
-          'tracked': [],
-      })
+  Store.init_state(default_state={
+      'show': None,
+      'autoplay': False,
+      'playing': False,
+      'tracked': [],
+  })
 
   # Handle any edge cases
   Error.check.required_native_packages(['streamlink'])
@@ -53,8 +50,8 @@ def main():
 
   # Option handler execution order
   option_priority = [
-      'debug', 'show', 'episode', 'quality', 'next', 'track', 'updates',
-      'info', 'autoplay', 'play'
+      'debug', 'show', 'episode', 'next', 'track', 'updates', 'info',
+      'autoplay', 'play'
   ]
 
   # Option handler delegation

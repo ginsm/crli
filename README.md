@@ -11,6 +11,22 @@ Run `install.sh` -- this script will install this package via `pip`.
 
 
  
+## Configuration
+Configuration is done via [streamlink](https://streamlink.github.io/latest/cli.html).
+
+Here's a basic configuration to get started:
+
+```
+crunchyroll-username=<email>
+crunchyroll-password=<password>
+player=/usr/bin/vlc
+default-stream=best
+```
+
+Click this [link](https://streamlink.github.io/latest/cli.html#plugin-specific-configuration-file) to find where you should create your configuration file. Replace `pluginname` with `crunchyroll` whilst creaitng the file, i.e. `config.crunchyroll`.
+
+
+ 
 ## Commands
 
 ```
@@ -20,7 +36,6 @@ Usage:
 Options:
   -s, --show <name>        Select a show
   -e, --episode <number>   Select an episode (default: oldest ep)
-  -q, --quality <quality>  Set the video quality (default: "best")
   -p, --play               Play the selected episode
   -a, --autoplay           Autoplay episodes (default: false)
   -n, --next               Select the next episode

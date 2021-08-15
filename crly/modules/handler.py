@@ -76,7 +76,7 @@ def _episode(ep_num="1", options={}):
   episodes.update({'episode': data})
   Store.update_show(data=episodes)
   print(
-      f"[crly] Episode is now set to {Fore.YELLOW}{ep_num}{Style.RESET_ALL} for {Fore.YELLOW}{show}{Style.RESET_ALL}."
+      f"[crly] Episode is now set to {Fore.YELLOW}{ep_num}{Fore.RESET} for {Fore.YELLOW}{show}{Fore.RESET}."
   )
 
 
@@ -86,18 +86,17 @@ def _play(value=None, options={}, check_playing=True):
     Error.check.is_playing('--play')
 
   # Get the show name and show data
-  [show, quality, autoplay] = Store.fetch.state("show", "quality", "autoplay")
+  [show, autoplay] = Store.fetch.state("show", "autoplay")
   Error.check.must_select_show(show)
 
   # Check if autoplay is enabled and alert
   if autoplay:
-    print(f"{Fore.MAGENTA}[crly] Autoplay is enabled.{Style.RESET_ALL}")
-  Streamlink.play(show, quality)
+    print(f"{Fore.MAGENTA}[crly] Autoplay is enabled.{Fore.RESET}")
+  Streamlink.play(show)
 
   # Check if autoplay is still enabled & play next episode
   [autoplay] = Store.fetch.state("autoplay")
   if autoplay:
-    print(f"{Fore.MAGENTA}[crly] Autoplay is still enabled.{Style.RESET_ALL}")
     _next(check_playing=False)
     _play(check_playing=False)
 
@@ -152,10 +151,6 @@ def _info(value=None, options={}):
     if ep['episode'] == episode:
       info = info + f" {Fore.YELLOW}[selected]{Style.RESET_ALL}"
     print(info)
-
-
-def _quality(value="best", options={}):
-  Store.update_state({'quality': value})
 
 
 def _autoplay(value=None, options={}):
@@ -230,7 +225,6 @@ Handler = DotMap({
     'show': _show,
     'episode': _episode,
     'debug': _debug,
-    'quality': _quality,
     'play': _play,
     'autoplay': _autoplay,
     'info': _info,
