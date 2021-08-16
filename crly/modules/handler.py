@@ -91,7 +91,9 @@ def _play(value=None, options={}, check_playing=True):
 
   # Check if autoplay is enabled and alert
   if autoplay:
-    print(f"{Fore.MAGENTA}[crly] Autoplay is enabled.{Fore.RESET}")
+    print(
+        f"{Fore.BLUE}{Style.BRIGHT}[crly] Autoplay is enabled.{Style.RESET_ALL}"
+    )
   Streamlink.play(show)
 
   # Check if autoplay is still enabled & play next episode
@@ -199,8 +201,8 @@ def _updates(value=None, options={}):
     else:
       not_updated.append(f"{show}")
 
-  # Alert the user
-  print(f"{Fore.MAGENTA}[ Shows being tracked ]{Style.RESET_ALL}")
+  # Alert the user 
+  print(f"{Fore.BLUE}{Style.BRIGHT}[ Tracked Shows ]{Style.RESET_ALL}")
   print("\n".join(updated + not_updated))
 
 

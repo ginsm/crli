@@ -57,7 +57,8 @@ def _no_episodes(episodes=[], show="", previous_show=""):
 def _on_last_episode(show="", episodes=[], index=0):
   if (len(episodes) - 1) == index:
     sys.exit(
-        f"{ERROR_RED}[crly] Error: There are are no more episodes for {show}.")
+        f"[crly] There are are no more episodes for {Fore.YELLOW}{show}{Fore.RESET}."
+    )
 
 
 def _episode_not_found(show="", ep_num=0, data={}):
