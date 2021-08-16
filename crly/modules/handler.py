@@ -80,7 +80,7 @@ def _episode(ep_num="1", options={}):
   )
 
 
-def _play(value=None, options={}, check_playing=True):
+def _play(value=None, options={}, check_playing=True, nextEp=False):
   # Disable command issuing while playing
   if check_playing:
     Error.check.is_playing('--play')
@@ -94,13 +94,15 @@ def _play(value=None, options={}, check_playing=True):
     print(
         f"{Fore.BLUE}{Style.BRIGHT}[crly] Autoplay is enabled.{Style.RESET_ALL}"
     )
+    if nextEp:
+      _next(check_playing=False)
+
   Streamlink.play(show)
 
   # Check if autoplay is still enabled & play next episode
   [autoplay] = Store.fetch.state("autoplay")
   if autoplay:
-    _next(check_playing=False)
-    _play(check_playing=False)
+    _play(check_playing=False, nextEp=True)
 
 
 def _next(value=None, options={}, check_playing=True):
@@ -201,7 +203,7 @@ def _updates(value=None, options={}):
     else:
       not_updated.append(f"{show}")
 
-  # Alert the user 
+  # Alert the user
   print(f"{Fore.BLUE}{Style.BRIGHT}[ Tracked Shows ]{Style.RESET_ALL}")
   print("\n".join(updated + not_updated))
 
