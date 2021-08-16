@@ -38,8 +38,17 @@ Configuration is done via [streamlink](https://streamlink.github.io/latest/cli.h
 ```
 crunchyroll-username=<email>
 crunchyroll-password=<password>
-player=/usr/bin/vlc
+player=<player>
 default-stream=best
 ```
 
 Click this [link](https://streamlink.github.io/latest/cli.html#plugin-specific-configuration-file) to find where you should create your configuration file. Replace `pluginname` with `crunchyroll` whilst creaitng the file, i.e. `config.crunchyroll`.
+
+### Episode Seeking
+In order to seek and see the entire duration of the episode, you'll want to add the following setting to your configuration:
+
+```
+player-passthrough=hls
+```
+
+I ran into issues whilst using `vlc` with this setting but it worked out of the box using `mplayer` for me. You may need to play around to get it working.
