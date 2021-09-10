@@ -1,5 +1,6 @@
 import subprocess
 import os
+import json
 
 from dotmap import DotMap
 from colorama import Fore, Style
@@ -208,10 +209,15 @@ def _updates(value=None, options={}):
   print("\n".join(updated + not_updated))
 
 
-def _debug(value={}, options={}):
-  print("<Debug Information>", options)
-  print("<State>", Store.fetch.state())
-  print("<Episode>", Store.fetch.episode())
+def _debug(value=None, options={}):
+  data = {
+      "Options": options,
+      "State": Store.fetch.state(),
+      "Episode": Store.fetch.episode(),
+  }
+
+  for key, val in data.items():
+    print(f"<{key}>", json.dumps(val, indent=2, default=str))
 
 
 # ANCHOR - Exit Handler
